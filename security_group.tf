@@ -29,8 +29,8 @@ resource "aws_security_group" "alb" {
   }
 }
 
-# -- EC2 SG
-resource "aws_security_group" "ec2" {
+# -- ECS Container SG
+resource "aws_security_group" "ecs-container" {
   name   = "qwik-api-server-sg"
   vpc_id = module.network.vpc_id
 
@@ -62,7 +62,7 @@ resource "aws_security_group" "rds" {
     from_port       = 5432
     to_port         = 5432
     protocol        = "tcp"
-    security_groups = [aws_security_group.ec2.id]
+    security_groups = [aws_security_group.ecs-container.id]
   }
 
   egress {

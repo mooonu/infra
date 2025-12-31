@@ -1,6 +1,20 @@
+# -- aws
 variable "aws_region" {
-  type    = string
-  default = "ap-northeast-2"
+  type = string
+}
+
+variable "aws_account_id" {
+  type = string
+}
+
+# -- ecs
+variable "ecs_subnets" {
+  type = list(string)
+}
+
+# -- ecr
+variable "ecr_repository_url" {
+  type = string
 }
 
 # -- db
