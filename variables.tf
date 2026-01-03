@@ -17,6 +17,10 @@ variable "ecr_repository_url" {
   type = string
 }
 
+variable "image_tag" {
+  type = string
+}
+
 # -- db
 variable "db_name" {
   type = string

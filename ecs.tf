@@ -42,7 +42,7 @@ resource "aws_ecs_task_definition" "api" {
   container_definitions = jsonencode([
     {
       name  = "qwik-api"
-      image = "${var.ecr_repository_url}"
+      image = "${var.ecr_repository_url}:${var.image_tag}"
 
       portMappings = [
         {
@@ -85,7 +85,7 @@ resource "aws_ecs_service" "api" {
   launch_type     = "FARGATE"
 
   network_configuration {
-    subnets          = [
+    subnets = [
       for idx in var.ecs_subnets : module.network.private_subnet_ids[idx]
     ]
     security_groups  = [aws_security_group.ecs-container.id]
@@ -96,6 +96,13 @@ resource "aws_ecs_service" "api" {
     target_group_arn = aws_lb_target_group.this.arn
     container_name   = "qwik-api"
     container_port   = 8000
+  }
+
+  # github actions로 배포하므로 추후 변경사항이 생겨 terraform apply시 충돌방지
+  lifecycle {
+    ignore_changes = [
+      task_definition,
+    ]
   }
 
   depends_on = [aws_lb_listener.https]
