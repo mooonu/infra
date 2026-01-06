@@ -133,12 +133,12 @@ output "sqs_queue_arn" {
 output "eventbridge_pipes_config" {
   description = "EventBridge Pipes 수동 구축 시 필요한 설정값"
   value = {
-    source_sqs_arn            = data.aws_sqs_queue.job_queue.arn
-    target_ecs_cluster_arn    = aws_ecs_cluster.this.arn
-    target_task_definition    = aws_ecs_task_definition.worker.arn
-    subnets                   = module.network.private_subnet_ids
-    security_groups           = [aws_security_group.ecs-worker.id]
-    task_execution_role_arn   = aws_iam_role.ecs_task_execution.arn
-    task_role_arn             = aws_iam_role.ecs_worker_task.arn
+    source_sqs_arn          = data.aws_sqs_queue.job_queue.arn
+    target_ecs_cluster_arn  = aws_ecs_cluster.this.arn
+    target_task_definition  = aws_ecs_task_definition.worker.arn
+    subnets                 = module.network.private_subnet_ids
+    security_groups         = [aws_security_group.ecs-worker.id]
+    task_execution_role_arn = aws_iam_role.ecs_task_execution.arn
+    task_role_arn           = aws_iam_role.ecs_worker_task.arn
   }
 }

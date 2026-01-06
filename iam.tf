@@ -75,7 +75,7 @@ resource "aws_iam_role_policy" "worker_s3" {
         Action = [
           "s3:GetObject",
           "s3:PutObject",
-          ]
+        ]
         Resource = "arn:aws:s3:::${var.deploy_bucket_name}/*"
       }
     ]

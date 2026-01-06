@@ -6,6 +6,7 @@ locals {
     "SECRET_KEY",
     "GITHUB_CLIENT_ID",
     "GITHUB_CLIENT_SECRET",
-    "GITHUB_REDIRECT_URI"
+    "GITHUB_REDIRECT_URI",
+    "SQS_QUEUE_URL"
   ]
 }

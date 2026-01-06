@@ -19,6 +19,16 @@ resource "aws_ssm_parameter" "secret_key" {
   }
 }
 
+resource "aws_ssm_parameter" "sqs_queue_url" {
+  name  = "/qwik/dev/SQS_QUEUE_URL"
+  type  = "SecureString"
+  value = data.aws_sqs_queue.job_queue.url # 여기만 다르게 설정함
+
+  tags = {
+    Name = "qwik-secret-key"
+  }
+}
+
 resource "aws_ssm_parameter" "github_client_id" {
   name  = "/qwik/dev/GITHUB_CLIENT_ID"
   type  = "String"
