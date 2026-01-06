@@ -24,3 +24,11 @@
 [이슈]
 
 - Task 실행 중 Spot 인터럽션 시 재처리 로직 필요 (Worker)
+- CloudWatch 더 똑똑하게 쓰는 방법 알아내기 (콘솔에서 열심히 클릭해서 보는 중)
+- 관리되지 않는 리소스
+  - S3
+  - Route53
+  - ACM
+  - CloudFront
+  - SQS
+  - ECR
