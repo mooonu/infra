@@ -10,7 +10,7 @@
 
 ### 배포 파이프라인 및 서비스 구조
 
-<img width="400" height="600" alt="Image" src="https://github.com/user-attachments/assets/9420744c-ffac-4d88-8bec-fd9dbadbec4a" />
+<img width="400" height="600" alt="Image" src="https://github.com/user-attachments/assets/049e8940-e7c6-4275-9db6-3c1abed9b861" />
 
 <br>
 
