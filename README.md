@@ -8,6 +8,10 @@
 
 <img width="400" height="600" alt="Image" src="https://github.com/user-attachments/assets/9f4f02a9-a34d-4566-8742-064b9d9afe81" />
 
+### 배포 파이프라인 및 서비스 구조
+
+<img width="400" height="600" alt="Image" src="https://github.com/user-attachments/assets/9420744c-ffac-4d88-8bec-fd9dbadbec4a" />
+
 <br>
 
 [변경]
