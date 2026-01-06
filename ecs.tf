@@ -1,15 +1,3 @@
-locals {
-  ssm_prefix = "arn:aws:ssm:${var.aws_region}:${var.aws_account_id}:parameter/qwik/dev"
-
-  secret_names = [
-    "DATABASE_URL",
-    "SECRET_KEY",
-    "GITHUB_CLIENT_ID",
-    "GITHUB_CLIENT_SECRET",
-    "GITHUB_REDIRECT_URI"
-  ]
-}
-
 # -- ECS Cluster
 resource "aws_ecs_cluster" "this" {
   name = "qwik-cluster"
@@ -109,5 +97,66 @@ resource "aws_ecs_service" "api" {
 
   tags = {
     Name = "qwik-api-service"
+  }
+}
+
+# -- CloudWatch Log Group for Worker
+resource "aws_cloudwatch_log_group" "worker" {
+  name              = "/ecs/qwik-worker"
+  retention_in_days = 7
+
+  tags = {
+    Name = "qwik-worker-logs"
+  }
+}
+
+# -- ECS Task Definition for Worker
+resource "aws_ecs_task_definition" "worker" {
+  family                   = "qwik-worker"
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  cpu                      = "512"
+  memory                   = "1024"
+  execution_role_arn       = aws_iam_role.ecs_task_execution.arn
+  task_role_arn            = aws_iam_role.ecs_worker_task.arn
+
+  container_definitions = jsonencode([
+    {
+      name  = "qwik-worker"
+      image = "${var.ecr_worker_repository_url}:${var.worker_image_tag}"
+
+      environment = [
+        {
+          name  = "SQS_QUEUE_URL"
+          value = data.aws_sqs_queue.job_queue.url
+        },
+        {
+          name  = "S3_BUCKET_NAME"
+          value = var.deploy_bucket_name
+        }
+      ]
+
+      secrets = [
+        {
+          name      = "DATABASE_URL"
+          valueFrom = "${local.ssm_prefix}/DATABASE_URL"
+        }
+      ]
+
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = "/ecs/qwik-worker"
+          "awslogs-region"        = var.aws_region
+          "awslogs-stream-prefix" = "ecs"
+        }
+      }
+
+      essential = true
+    }
+  ])
+
+  tags = {
+    Name = "qwik-worker-task-definition"
   }
 }

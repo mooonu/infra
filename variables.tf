@@ -17,7 +17,20 @@ variable "ecr_repository_url" {
   type = string
 }
 
+variable "ecr_worker_repository_url" {
+  type = string
+}
+
+variable "worker_image_tag" {
+  type = string
+}
+
 variable "image_tag" {
+  type = string
+}
+
+# -- s3
+variable "deploy_bucket_name" {
   type = string
 }
 

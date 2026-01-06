@@ -53,6 +53,25 @@ resource "aws_security_group" "ecs-container" {
   }
 }
 
+# -- ECS Worker SG
+resource "aws_security_group" "ecs-worker" {
+  name   = "qwik-worker-sg"
+  vpc_id = module.network.vpc_id
+
+  # Worker는 인바운드 트래픽 불필요 (EventBridge에서 실행만 됨)
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "qwik-worker-sg"
+  }
+}
+
 # -- RDS SG
 resource "aws_security_group" "rds" {
   name   = "qwik-rds-sg"
@@ -62,7 +81,10 @@ resource "aws_security_group" "rds" {
     from_port       = 5432
     to_port         = 5432
     protocol        = "tcp"
-    security_groups = [aws_security_group.ecs-container.id]
+    security_groups = [
+      aws_security_group.ecs-container.id,
+      aws_security_group.ecs-worker.id
+    ]
   }
 
   egress {

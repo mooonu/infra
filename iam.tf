@@ -52,3 +52,32 @@ resource "aws_iam_role" "ecs_task" {
     Name = "qwik-ecs-task-role"
   }
 }
+
+# -- ECS Worker Task Role
+resource "aws_iam_role" "ecs_worker_task" {
+  name               = "qwik-ecs-worker-task-role"
+  assume_role_policy = data.aws_iam_policy_document.ecs_task_execution_assume_role.json
+
+  tags = {
+    Name = "qwik-ecs-worker-task-role"
+  }
+}
+
+resource "aws_iam_role_policy" "worker_s3" {
+  name = "qwik-worker-s3-policy"
+  role = aws_iam_role.ecs_worker_task.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "s3:GetObject",
+          "s3:PutObject",
+          ]
+        Resource = "arn:aws:s3:::${var.deploy_bucket_name}/*"
+      }
+    ]
+  })
+}
