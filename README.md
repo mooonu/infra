@@ -19,7 +19,8 @@
 - EC2 방식에서 ECS Fargate 방식으로 변경
 - ECS Service가 자동으로 Target Group 등록, attachment 삭제
 - Worker Task Fargate -> FargateSpot 변경
-- 빌드 파이프라인 추가 (SQS -> EventBridge Pipes -> ECS RunTask)
+- 배포 파이프라인 추가 (SQS -> EventBridge Pipes -> ECS RunTask)
+- CloudFront Functions 경로 매핑 -> CloudFront Functions + KeyValueStore 경로 매핑
 
 [이슈]
 
@@ -29,6 +30,8 @@
   - S3
   - Route53
   - ACM
-  - CloudFront
+  - CloudFront Distributions
+  - CloudFront Functions
+  - CloudFront KeyValueStore
   - SQS
   - ECR
