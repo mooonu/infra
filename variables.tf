@@ -61,3 +61,8 @@ variable "github_client_secret" {
   type      = string
   sensitive = true
 }
+
+# -- kvs
+variable "kvs_arn" {
+  type = string
+}

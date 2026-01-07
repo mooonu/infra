@@ -101,3 +101,24 @@ resource "aws_iam_role_policy" "worker_s3" {
     ]
   })
 }
+
+resource "aws_iam_role_policy" "worker_kvs" {
+  name = "qwik-worker-kvs-policy"
+  role = aws_iam_role.ecs_worker_task.id
+
+  policy = jsonencode(
+    {
+      Version = "2012-10-17",
+      Statement = [
+        {
+          Effect = "Allow",
+          Action = [
+            "cloudfront-keyvaluestore:DescribeKeyValueStore",
+            "cloudfront-keyvaluestore:PutKey"
+          ]
+          Resource = var.kvs_arn
+        }
+      ]
+    }
+  )
+}
