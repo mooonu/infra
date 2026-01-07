@@ -53,6 +53,26 @@ resource "aws_iam_role" "ecs_task" {
   }
 }
 
+resource "aws_iam_role_policy" "api_sqs" {
+  name = "qwik-api-sqs-policy"
+  role = aws_iam_role.ecs_task.id
+
+  policy = jsonencode(
+    {
+      Version = "2012-10-17",
+      Statement = [
+        {
+          Effect = "Allow",
+          Action = [
+            "sqs:SendMessage"
+          ]
+          Resource = data.aws_sqs_queue.job_queue.arn
+        }
+      ]
+    }
+  )
+}
+
 # -- ECS Worker Task Role
 resource "aws_iam_role" "ecs_worker_task" {
   name               = "qwik-ecs-worker-task-role"
