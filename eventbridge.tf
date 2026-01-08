@@ -122,6 +122,10 @@ resource "aws_pipes_pipe" "sqs_to_ecs" {
             name  = "DEPLOYMENT_ID"
             value = "$.body.deployment_id"
           }
+          environment {
+            name = "USERNAME"
+            value = "$.body.username"
+          }
         }
       }
     }
