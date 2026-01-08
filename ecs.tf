@@ -146,6 +146,10 @@ resource "aws_ecs_task_definition" "worker" {
         {
           name  = "S3_BUCKET_NAME"
           value = var.deploy_bucket_name
+        },
+        {
+          name  = "KVS_ARN"
+          value = var.kvs_arn
         }
       ]
 
