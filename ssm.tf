@@ -25,7 +25,17 @@ resource "aws_ssm_parameter" "sqs_queue_url" {
   value = data.aws_sqs_queue.job_queue.url # 여기만 다르게 설정함
 
   tags = {
-    Name = "qwik-secret-key"
+    Name = "qwik-sqs_queue_url"
+  }
+}
+
+resource "aws_ssm_parameter" "s3_bucket_name" {
+  name  = "/qwik/dev/S3_BUCKET_NAME"
+  type  = "String"
+  value = var.deploy_bucket_name
+
+  tags = {
+    Name = "qwik-s3_bucket_name"
   }
 }
 
@@ -52,7 +62,7 @@ resource "aws_ssm_parameter" "github_client_secret" {
 resource "aws_ssm_parameter" "github_redirect_uri" {
   name  = "/qwik/dev/GITHUB_REDIRECT_URI"
   type  = "String"
-  value = "https://api.qw1k.cloud/auth/callback"
+  value = var.github_redirect_uri
 
   tags = {
     Name = "qwik-github-redirect-uri"

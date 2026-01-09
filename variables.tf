@@ -62,6 +62,10 @@ variable "github_client_secret" {
   sensitive = true
 }
 
+variable "github_redirect_uri" {
+  type = string
+}
+
 # -- kvs
 variable "kvs_arn" {
   type = string
