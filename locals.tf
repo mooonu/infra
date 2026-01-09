@@ -8,6 +8,7 @@ locals {
     "GITHUB_CLIENT_SECRET",
     "GITHUB_REDIRECT_URI",
     "SQS_QUEUE_URL",
-    "S3_BUCKET_NAME"
+    "S3_BUCKET_NAME",
+    "KVS_ARN"
   ]
 }

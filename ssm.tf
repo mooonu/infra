@@ -1,4 +1,4 @@
-# -- Parameter Store
+# -- RDS Parameters
 resource "aws_ssm_parameter" "database_url" {
   name  = "/qwik/dev/DATABASE_URL"
   type  = "SecureString"
@@ -9,6 +9,7 @@ resource "aws_ssm_parameter" "database_url" {
   }
 }
 
+# -- API Parameters
 resource "aws_ssm_parameter" "secret_key" {
   name  = "/qwik/dev/SECRET_KEY"
   type  = "SecureString"
@@ -39,6 +40,17 @@ resource "aws_ssm_parameter" "s3_bucket_name" {
   }
 }
 
+resource "aws_ssm_parameter" "kvs_arn" {
+  name  = "/qwik/dev/KVS_ARN"
+  type  = "String"
+  value = var.kvs_arn
+
+  tags = {
+    Name = "qwik-kvs_arn"
+  }
+}
+
+# -- Github OAuth Parameters
 resource "aws_ssm_parameter" "github_client_id" {
   name  = "/qwik/dev/GITHUB_CLIENT_ID"
   type  = "String"
