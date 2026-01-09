@@ -95,6 +95,13 @@ resource "aws_iam_role_policy" "api_kvs_s3" {
         {
           Effect = "Allow",
           Action = [
+            "s3:ListBucket"
+          ]
+          Resource = "arn:aws:s3:::${var.deploy_bucket_name}"
+        },
+        {
+          Effect = "Allow",
+          Action = [
             "s3:DeleteObject"
           ]
           Resource = "arn:aws:s3:::${var.deploy_bucket_name}/*"
