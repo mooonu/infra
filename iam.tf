@@ -73,6 +73,37 @@ resource "aws_iam_role_policy" "api_sqs" {
   )
 }
 
+resource "aws_iam_role_policy" "api_kvs_s3" {
+  name = "qwik-api-kvs-s3-policy"
+  role = aws_iam_role.ecs_task.id
+
+  policy = jsonencode(
+    {
+      Version = "2012-10-17",
+      Statement = [
+        {
+          Effect = "Allow",
+          Action = [
+            "cloudfront-keyvaluestore:DescribeKeyValueStore",
+            "cloudfront-keyvaluestore:GetKey",
+            "cloudfront-keyvaluestore:DeleteKey",
+            "cloudfront-keyvaluestore:UpdateKey",
+            "cloudfront-keyvaluestore:ListKeys"
+          ]
+          Resource = var.kvs_arn
+        },
+        {
+          Effect = "Allow",
+          Action = [
+            "s3:DeleteObject"
+          ]
+          Resource = "arn:aws:s3:::${var.deploy_bucket_name}/*"
+        }
+      ]
+    }
+  )
+}
+
 # -- ECS Worker Task Role
 resource "aws_iam_role" "ecs_worker_task" {
   name               = "qwik-ecs-worker-task-role"
