@@ -123,7 +123,7 @@ resource "aws_pipes_pipe" "sqs_to_ecs" {
             value = "$.body.deployment_id"
           }
           environment {
-            name = "USERNAME"
+            name  = "USERNAME"
             value = "$.body.username"
           }
         }

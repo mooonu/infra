@@ -2,6 +2,11 @@
 resource "aws_ecs_cluster" "this" {
   name = "qwik-cluster"
 
+  setting {
+    name  = "containerInsights"
+    value = "enabled"
+  }
+
   tags = {
     Name = "qwik-cluster"
   }
@@ -79,11 +84,11 @@ resource "aws_ecs_task_definition" "api" {
 
 # -- ECS Service for API
 resource "aws_ecs_service" "api" {
-  name                   = "qwik-api-service"
-  cluster                = aws_ecs_cluster.this.id
-  task_definition        = aws_ecs_task_definition.api.arn
-  desired_count          = 1
-  launch_type            = "FARGATE"
+  name            = "qwik-api-service"
+  cluster         = aws_ecs_cluster.this.id
+  task_definition = aws_ecs_task_definition.api.arn
+  desired_count   = 1
+  launch_type     = "FARGATE"
 
   network_configuration {
     subnets = [
@@ -150,6 +155,10 @@ resource "aws_ecs_task_definition" "worker" {
         {
           name  = "KVS_ARN"
           value = var.kvs_arn
+        },
+        {
+          name  = "PYTHONUNBUFFERED",
+          value = "1"
         }
       ]
 
