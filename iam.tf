@@ -88,7 +88,8 @@ resource "aws_iam_role_policy" "api_kvs_s3" {
             "cloudfront-keyvaluestore:GetKey",
             "cloudfront-keyvaluestore:DeleteKey",
             "cloudfront-keyvaluestore:UpdateKey",
-            "cloudfront-keyvaluestore:ListKeys"
+            "cloudfront-keyvaluestore:ListKeys",
+            "cloudfront-keyvaluestore:PutKey"
           ]
           Resource = var.kvs_arn
         },
