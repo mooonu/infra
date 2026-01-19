@@ -73,6 +73,6 @@ variable "kvs_arn" {
 
 # -- datadog
 variable "datadog_api" {
-  type = string
+  type      = string
   sensitive = true
 }

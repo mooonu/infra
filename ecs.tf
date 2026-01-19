@@ -35,6 +35,16 @@ resource "aws_cloudwatch_log_group" "ecs" {
   }
 }
 
+# -- CloudWatch Log Group for Datadog Agent
+resource "aws_cloudwatch_log_group" "datadog_agent" {
+  name              = "/ecs/qwik-datadog-agent"
+  retention_in_days = 7
+
+  tags = {
+    Name = "qwik-datadog-agent-logs"
+  }
+}
+
 # -- ECS Task Definition for API
 resource "aws_ecs_task_definition" "api" {
   family                   = "qwik-api"
@@ -48,8 +58,8 @@ resource "aws_ecs_task_definition" "api" {
   container_definitions = jsonencode([
     # fluent bit (firelens)
     {
-      name = "qwik-log-router"
-      image = "amazon/aws-for-fluent-bit:stable"
+      name      = "qwik-log-router"
+      image     = "amazon/aws-for-fluent-bit:stable"
       essential = true
 
       firelensConfiguration = {
@@ -64,16 +74,16 @@ resource "aws_ecs_task_definition" "api" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          "awslogs-group" = "/ecs/qwik-api"
-          "awslogs-region" = var.aws_region
+          "awslogs-group"         = "/ecs/qwik-api"
+          "awslogs-region"        = var.aws_region
           "awslogs-stream-prefix" = "firelens"
         }
       }
     },
     # datadog agent
     {
-      name = "qwik-datadog-agent"
-      image = "public.ecr.aws/datadog/agent:latest"
+      name      = "qwik-datadog-agent"
+      image     = "public.ecr.aws/datadog/agent:latest"
       essential = true
 
       memoryReservation = 256
@@ -81,33 +91,33 @@ resource "aws_ecs_task_definition" "api" {
       portMappings = [
         {
           containerPort = 8126
-          hostPort = 8126
-          protocol = "tcp"
+          hostPort      = 8126
+          protocol      = "tcp"
         }
       ]
 
       environment = [
         {
-          name = "ECS_FARGATE"
+          name  = "ECS_FARGATE"
           value = "true"
         },
         {
-          name = "DD_SITE"
+          name  = "DD_SITE"
           value = "ap1.datadoghq.com"
         },
         {
-          name = "DD_APM_ENABLE"
+          name  = "DD_APM_ENABLE"
           value = "true"
         },
         {
-          name = "DD_APM_NON_LOCAL_TRAFFIC"
+          name  = "DD_APM_NON_LOCAL_TRAFFIC"
           value = "true"
         }
       ]
 
       secrets = [
         {
-          name = "DD_API_KEY"
+          name      = "DD_API_KEY"
           valueFrom = "/qwik/dev/DATADOG_API"
         }
       ]
@@ -116,7 +126,7 @@ resource "aws_ecs_task_definition" "api" {
         logDriver = "awslogs"
         options = {
           "awslogs-group"         = "/ecs/qwik-datadog-agent"
-          "awslogs-region" = var.aws_region
+          "awslogs-region"        = var.aws_region
           "awslogs-stream-prefix" = "datadog"
         }
       }
@@ -143,7 +153,7 @@ resource "aws_ecs_task_definition" "api" {
       logConfiguration = {
         logDriver = "awsfirelens"
         options = {
-          "Name" = "datadog"
+          "Name"       = "datadog"
           "Host"       = "http-intake.logs.ap1.datadoghq.com"
           "dd_service" = "qwik-api"
           "dd_source"  = "ecs"
@@ -153,7 +163,7 @@ resource "aws_ecs_task_definition" "api" {
         }
         secretOptions = [
           {
-            name = "apikey"
+            name      = "apikey"
             valueFrom = "/qwik/dev/DATADOG_API"
           }
         ]
@@ -163,8 +173,8 @@ resource "aws_ecs_task_definition" "api" {
 
       depends_on = [
         {
-          containerName = "log_router"
-          condition = "START"
+          containerName = "qwik-log-router"
+          condition     = "START"
         }
       ]
     }
@@ -176,11 +186,11 @@ resource "aws_ecs_task_definition" "api" {
 
 # -- ECS Service for API
 resource "aws_ecs_service" "api" {
-  name            = "qwik-api-service"
-  cluster         = aws_ecs_cluster.this.id
-  task_definition = aws_ecs_task_definition.api.arn
-  desired_count   = 1
-  launch_type     = "FARGATE"
+  name                   = "qwik-api-service"
+  cluster                = aws_ecs_cluster.this.id
+  task_definition        = aws_ecs_task_definition.api.arn
+  desired_count          = 1
+  launch_type            = "FARGATE"
   enable_execute_command = true
 
   network_configuration {
