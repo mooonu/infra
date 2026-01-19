@@ -70,3 +70,9 @@ variable "github_redirect_uri" {
 variable "kvs_arn" {
   type = string
 }
+
+# -- datadog
+variable "datadog_api" {
+  type = string
+  sensitive = true
+}

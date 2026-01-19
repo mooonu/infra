@@ -80,3 +80,14 @@ resource "aws_ssm_parameter" "github_redirect_uri" {
     Name = "qwik-github-redirect-uri"
   }
 }
+
+# -- Datadog
+resource "aws_ssm_parameter" "datadog_api" {
+  name  = "/qwik/dev/DATADOG_API"
+  type  = "SecureString"
+  value = var.datadog_api
+
+  tags = {
+    Name = "qwik-datadog_api"
+  }
+}

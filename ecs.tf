@@ -40,12 +40,87 @@ resource "aws_ecs_task_definition" "api" {
   family                   = "qwik-api"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  cpu                      = "256"
-  memory                   = "512"
+  cpu                      = "512"
+  memory                   = "1024"
   execution_role_arn       = aws_iam_role.ecs_task_execution.arn
   task_role_arn            = aws_iam_role.ecs_task.arn
 
   container_definitions = jsonencode([
+    # fluent bit (firelens)
+    {
+      name = "qwik-log-router"
+      image = "amazon/aws-for-fluent-bit:stable"
+      essential = true
+
+      firelensConfiguration = {
+        type = "fluentbit"
+        options = {
+          "enable-ecs-log-metadata" = "true"
+        }
+      }
+
+      memoryReservation = 50
+
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group" = "/ecs/qwik-api"
+          "awslogs-region" = var.aws_region
+          "awslogs-stream-prefix" = "firelens"
+        }
+      }
+    },
+    # datadog agent
+    {
+      name = "qwik-datadog-agent"
+      image = "public.ecr.aws/datadog/agent:latest"
+      essential = true
+
+      memoryReservation = 256
+
+      portMappings = [
+        {
+          containerPort = 8126
+          hostPort = 8126
+          protocol = "tcp"
+        }
+      ]
+
+      environment = [
+        {
+          name = "ECS_FARGATE"
+          value = "true"
+        },
+        {
+          name = "DD_SITE"
+          value = "ap1.datadoghq.com"
+        },
+        {
+          name = "DD_APM_ENABLE"
+          value = "true"
+        },
+        {
+          name = "DD_APM_NON_LOCAL_TRAFFIC"
+          value = "true"
+        }
+      ]
+
+      secrets = [
+        {
+          name = "DD_API_KEY"
+          valueFrom = "/qwik/dev/DATADOG_API"
+        }
+      ]
+
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = "/ecs/qwik-datadog-agent"
+          "awslogs-region" = var.aws_region
+          "awslogs-stream-prefix" = "datadog"
+        }
+      }
+    },
     {
       name  = "qwik-api"
       image = "${var.ecr_repository_url}:${var.image_tag}"
@@ -66,15 +141,32 @@ resource "aws_ecs_task_definition" "api" {
       ]
 
       logConfiguration = {
-        logDriver = "awslogs"
+        logDriver = "awsfirelens"
         options = {
-          "awslogs-group"         = "/ecs/qwik-api"
-          "awslogs-region"        = var.aws_region
-          "awslogs-stream-prefix" = "ecs"
+          "Name" = "datadog"
+          "Host"       = "http-intake.logs.ap1.datadoghq.com"
+          "dd_service" = "qwik-api"
+          "dd_source"  = "ecs"
+          "dd_tags"    = "env:dev,project:qwik"
+          "TLS"        = "on"
+          "provider"   = "ecs"
         }
+        secretOptions = [
+          {
+            name = "apikey"
+            valueFrom = "/qwik/dev/DATADOG_API"
+          }
+        ]
       }
 
       essential = true
+
+      depends_on = [
+        {
+          containerName = "log_router"
+          condition = "START"
+        }
+      ]
     }
   ])
   tags = {
