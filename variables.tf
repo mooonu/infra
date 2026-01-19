@@ -12,6 +12,11 @@ variable "ecs_subnets" {
   type = list(string)
 }
 
+# -- cloudfront
+variable "cf_distribution_id" {
+  type = string
+}
+
 # -- ecr
 variable "ecr_repository_url" {
   type = string

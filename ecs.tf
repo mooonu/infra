@@ -260,6 +260,10 @@ resource "aws_ecs_task_definition" "worker" {
           value = var.kvs_arn
         },
         {
+          name = "DISTRIBUTION_ID"
+          value = var.cf_distribution_id
+        },
+        {
           name  = "PYTHONUNBUFFERED",
           value = "1"
         }
