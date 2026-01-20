@@ -260,7 +260,7 @@ resource "aws_ecs_task_definition" "worker" {
           value = var.kvs_arn
         },
         {
-          name = "DISTRIBUTION_ID"
+          name  = "DISTRIBUTION_ID"
           value = var.cf_distribution_id
         },
         {

@@ -41,5 +41,4 @@ terraform.rc
 # End of https://www.toptal.com/developers/gitignore/api/terraform
 
 # Local notes
-fix.md
-iam_explain.md
+docs/

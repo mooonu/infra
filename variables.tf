@@ -17,6 +17,10 @@ variable "cf_distribution_id" {
   type = string
 }
 
+variable "cf_deployment_arn" {
+  type = string
+}
+
 # -- ecr
 variable "ecr_repository_url" {
   type = string

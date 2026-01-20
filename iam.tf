@@ -185,3 +185,23 @@ resource "aws_iam_role_policy" "worker_kvs" {
     }
   )
 }
+
+resource "aws_iam_role_policy" "worker_cloudfront" {
+  name = "qwik-worker-cloudfront-policy"
+  role = aws_iam_role.ecs_worker_task.id
+
+  policy = jsonencode(
+    {
+      Version = "2012-10-17",
+      Statement = [
+        {
+          Effect = "Allow",
+          Action = [
+            "cloudfront:CreateInvalidation"
+          ]
+          Resource : var.cf_deployment_arn
+        }
+      ]
+    }
+  )
+}
