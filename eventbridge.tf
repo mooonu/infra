@@ -126,6 +126,10 @@ resource "aws_pipes_pipe" "sqs_to_ecs" {
             name  = "USERNAME"
             value = "$.body.username"
           }
+          environment {
+            name = "PROJECT_ID"
+            value = "$.body.project_id"
+          }
         }
       }
     }

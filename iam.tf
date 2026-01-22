@@ -158,8 +158,13 @@ resource "aws_iam_role_policy" "worker_s3" {
         Action = [
           "s3:GetObject",
           "s3:PutObject",
+          "s3:ListBucket",
+          "s3:DeleteObject",
         ]
-        Resource = "arn:aws:s3:::${var.deploy_bucket_name}/*"
+        Resource = [
+          "arn:aws:s3:::${var.deploy_bucket_name}",
+          "arn:aws:s3:::${var.deploy_bucket_name}/*"
+        ]
       }
     ]
   })
